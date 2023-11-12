@@ -1,7 +1,7 @@
 
-**raudio_sdl: An SDL2-Powered Fork of the raudio Library by raysan5**
+## **raudio_sdl: An SDL2-Powered fork of the raudio library by raysan5**
 
-`raudio_sdl` is an enhanced version of the `raudio` library, initially used in the `raylib` library [raylib](https://github.com/raysan5/raylib) as its internal audio module. While `raudio` offers the same audio functionality as `raylib`, `raudio_sdl` employs a SDL2-powered backend for audio playback. This enables audio playback on platforms not supported by `raudio`, such as the Nintendo Switch.
+`raudio_sdl` is an enhanced version of the `raudio` library, initially used in the `raylib` library [raylib](https://github.com/raysan5/raylib) as its internal audio module. While `raudio` offers the same audio functionality as `raylib`, `raudio_sdl` employs a SDL2-powered backend for audio playback. This enables audio playback on platforms not supported by `raudio` by default, such as the Nintendo Switch.
 
 <br>
 
