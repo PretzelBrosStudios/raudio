@@ -1,8 +1,11 @@
 /**********************************************************************************************
 *
-*   raudio v1.1 - A simple and easy-to-use audio library based on miniaudio
+*   raudio_sdl - An SDL2-Powered fork of the raudio library
+*
+*   NOTE: This is a fork of the raudio library (https://github.com/raysan5/raudio) by raysan5.
 *
 *   FEATURES:
+*       - Utilizes SDL2 as the backend for audio output on platforms not supported by raudio
 *       - Manage audio device (init/close)
 *       - Manage raw audio context
 *       - Manage mixing channels
@@ -11,6 +14,8 @@
 *       - Play/Stop/Pause/Resume loaded audio
 *
 *   CONFIGURATION:
++
+*   SDL2 backend for audio playback is used by default.
 *
 *   #define SUPPORT_MODULE_RAUDIO
 *       raudio module is included in the build
@@ -18,9 +23,6 @@
 *   #define RAUDIO_STANDALONE
 *       Define to use the module as standalone library (independently of raylib).
 *       Required types and functions are defined in the same module.
-*
-*   #define SDL_MINI
-*       Use a minified version of SDL for easy portability. Otherwise SDL2 is used by default.
 *
 *   #define SUPPORT_FILEFORMAT_WAV
 *   #define SUPPORT_FILEFORMAT_OGG
@@ -34,7 +36,7 @@
 *
 *   DEPENDENCIES:
 *       miniaudio.h     - Audio device management lib (https://github.com/mackron/miniaudio)
-*       backend_sdl.h   - Modified SDL backend for miniaudio (https://github.com/mackron/miniaudio)
+*       backend_sdl.h   - Modified SDL backend by miniaudio (https://github.com/mackron/miniaudio)
 *       stb_vorbis.h    - Ogg audio files loading (http://www.nothings.org/stb_vorbis/)
 *       dr_wav.h        - WAV audio files loading (http://github.com/mackron/dr_libs)
 *       dr_mp3.h        - MP3 audio file loading (https://github.com/mackron/dr_libs)
