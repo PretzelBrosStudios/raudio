@@ -6,7 +6,7 @@
 *
 *   DEPENDENCIES:
 *       miniaudio.h  	- Audio device management lib (https://github.com/dr-soft/miniaudio)
-*		backend_sdl.h	- SDL backend based on miniaudio (https://github.com/mackron/miniaudio)
+*	backend_sdl.h	- SDL backend based on miniaudio (https://github.com/mackron/miniaudio)
 *       stb_vorbis.h 	- Ogg audio files loading (http://www.nothings.org/stb_vorbis/)
 *       dr_wav.h     	- WAV audio file loading (https://github.com/mackron/dr_libs)
 *       dr_mp3.h     	- MP3 audio file loading (https://github.com/mackron/dr_libs)
@@ -15,11 +15,11 @@
 *       jar_mod.h    	- MOD audio file loading
 *
 *   COMPILATION:
-*		Option 1:
-*		Use the provided makefile. Make sure you have <SDL2/SDL.h> and the needed SDL2-libraries
-*		setup correctly on your system.
+*	Option 1:
+*	Use the provided makefile. Make sure you have <SDL2/SDL.h> and the needed SDL2-libraries
+*	setup correctly on your system.
 *
-*		Option 2:
+*	Option 2:
 *       gcc -o raudio_sdl.exe raudio_sdl.c ..\src\raudio.c -I..\src -I..\src\external -L. /
 *           -lsdl2 -lsetupapi -lole32 -lgdi32 -limm32 -lversion -loleaut32 -lwinmm -Wall -std=c99 /
 *			-DRAUDIO_STANDALONE -DSUPPORT_MODULE_RAUDIO -DSUPPORT_FILEFORMAT_WAV -DSUPPORT_FILEFORMAT_XM
@@ -76,10 +76,10 @@ int main(void)
 	{	
 		while (SDL_PollEvent(&event))
 		{
-            if (event.type == SDL_QUIT)
+	        	if (event.type == SDL_QUIT)
 			{
-                running = 0;
-            } 
+	                	running = 0;
+	        	} 
 		}
 
 		// Update the music stream in each iteration
