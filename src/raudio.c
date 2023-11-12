@@ -19,6 +19,9 @@
 *       Define to use the module as standalone library (independently of raylib).
 *       Required types and functions are defined in the same module.
 *
+*   #define SDL_MINI
+*       Use a minified version of SDL for easy portability. Otherwise SDL2 is used by default.
+*
 *   #define SUPPORT_FILEFORMAT_WAV
 *   #define SUPPORT_FILEFORMAT_OGG
 *   #define SUPPORT_FILEFORMAT_MP3
@@ -30,13 +33,14 @@
 *       supported by default, to remove support, just comment unrequired #define in this module
 *
 *   DEPENDENCIES:
-*       miniaudio.h  - Audio device management lib (https://github.com/mackron/miniaudio)
-*       stb_vorbis.h - Ogg audio files loading (http://www.nothings.org/stb_vorbis/)
-*       dr_wav.h     - WAV audio files loading (http://github.com/mackron/dr_libs)
-*       dr_mp3.h     - MP3 audio file loading (https://github.com/mackron/dr_libs)
-*       dr_flac.h    - FLAC audio file loading (https://github.com/mackron/dr_libs)
-*       jar_xm.h     - XM module file loading
-*       jar_mod.h    - MOD audio file loading
+*       miniaudio.h     - Audio device management lib (https://github.com/mackron/miniaudio)
+*       backend_sdl.h   - Modified SDL backend for miniaudio (https://github.com/mackron/miniaudio)
+*       stb_vorbis.h    - Ogg audio files loading (http://www.nothings.org/stb_vorbis/)
+*       dr_wav.h        - WAV audio files loading (http://github.com/mackron/dr_libs)
+*       dr_mp3.h        - MP3 audio file loading (https://github.com/mackron/dr_libs)
+*       dr_flac.h       - FLAC audio file loading (https://github.com/mackron/dr_libs)
+*       jar_xm.h        - XM module file loading
+*       jar_mod.h       - MOD audio file loading
 *
 *   CONTRIBUTORS:
 *       David Reid (github: @mackron) (Nov. 2017):
@@ -47,6 +51,9 @@
 *           - MOD audio module support (jar_mod)
 *           - Mixing channels support
 *           - Raw audio context support
+*
+*       Alex Schaeferling
+*           - SDL backend based on the miniaudio example by David Reid (2023)
 *
 *
 *   LICENSE: zlib/libpng
@@ -164,6 +171,9 @@ typedef struct tagBITMAPINFOHEADER {
 #define MA_MALLOC RL_MALLOC
 #define MA_FREE RL_FREE
 
+#define MA_ENABLE_ONLY_SPECIFIC_BACKENDS
+#define MA_ENABLE_CUSTOM
+
 #define MA_NO_JACK
 #define MA_NO_WAV
 #define MA_NO_FLAC
@@ -175,6 +185,15 @@ typedef struct tagBITMAPINFOHEADER {
 #define MINIAUDIO_IMPLEMENTATION
 //#define MA_DEBUG_OUTPUT
 #include "external/miniaudio.h"         // Audio device initialization and management
+
+#define MA_NO_RUNTIME_LINKING
+#if defined(SDL_MINI)
+    #include "minisdl/minisdl_audio.h"
+    #include "minisdl/minisdl_audio.c"
+#else
+    #include <SDL2/SDL.h>
+#endif
+#include "external/backend_sdl.h"
 #undef PlaySound                        // Win32 API: windows.h > mmsystem.h defines PlaySound macro
 
 #include <stdlib.h>                     // Required for: malloc(), free()
@@ -365,6 +384,16 @@ struct rAudioProcessor {
 typedef struct AudioData {
     struct {
         ma_context context;         // miniaudio context data
+            struct
+            {
+                ma_proc SDL_InitSubSystem;
+                ma_proc SDL_QuitSubSystem;
+                ma_proc SDL_GetNumAudioDevices;
+                ma_proc SDL_GetAudioDeviceName;
+                ma_proc SDL_CloseAudioDevice;
+                ma_proc SDL_OpenAudioDevice;
+                ma_proc SDL_PauseAudioDevice;
+            } sdl;
         ma_device device;           // miniaudio device
         ma_mutex lock;              // miniaudio mutex lock
         bool isReady;               // Check if audio device is ready
@@ -435,8 +464,13 @@ void InitAudioDevice(void)
     // Init audio context
     ma_context_config ctxConfig = ma_context_config_init();
     ma_log_callback_init(OnLog, NULL);
+  
+    ma_backend backends[] = {
+        ma_backend_custom
+    };
+    ctxConfig.custom.onContextInit = ma_context_init__custom_loader;
+    ma_result result = ma_context_init(backends, sizeof(backends)/sizeof(backends[0]), &ctxConfig, &AUDIO.System.context);
 
-    ma_result result = ma_context_init(NULL, 0, &ctxConfig, &AUDIO.System.context);
     if (result != MA_SUCCESS)
     {
         TRACELOG(LOG_WARNING, "AUDIO: Failed to initialize context");
