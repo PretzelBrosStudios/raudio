@@ -21,8 +21,8 @@
 *
 *	Option 2:
 *       gcc -o raudio_sdl.exe raudio_sdl.c ..\src\raudio.c -I..\src -I..\src\external -L. /
-*           -lsdl2 -lsetupapi -lole32 -lgdi32 -limm32 -lversion -loleaut32 -lwinmm -Wall -std=c99 /
-*			-DRAUDIO_STANDALONE -DSUPPORT_MODULE_RAUDIO -DSUPPORT_FILEFORMAT_WAV -DSUPPORT_FILEFORMAT_XM
+*		-lsdl2 -lsetupapi -lole32 -lgdi32 -limm32 -lversion -loleaut32 -lwinmm -Wall -std=c99 /
+*		-DRAUDIO_STANDALONE -DSUPPORT_MODULE_RAUDIO -DSUPPORT_FILEFORMAT_WAV -DSUPPORT_FILEFORMAT_XM
 *
 *	The original raudio library is using the following license:
 *
