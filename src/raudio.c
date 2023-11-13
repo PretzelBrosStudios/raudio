@@ -381,8 +381,7 @@ struct rAudioProcessor {
 typedef struct AudioData {
     struct {
         ma_context context;         // miniaudio context data
-            struct
-            {
+            struct {
                 ma_proc SDL_InitSubSystem;
                 ma_proc SDL_QuitSubSystem;
                 ma_proc SDL_GetNumAudioDevices;
