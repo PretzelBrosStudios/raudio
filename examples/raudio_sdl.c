@@ -59,39 +59,36 @@
 
 int main(void)
 {
-	// Initialize the audio device for music and sound playback
-	InitAudioDevice();
+    // Initialize the audio device for music and sound playback
+    InitAudioDevice();
 
-	Music music = LoadMusicStream("resources/mini1111.xm");
-	Sound sound = LoadSound("resources/weird.wav");
+    Music music = LoadMusicStream("resources/mini1111.xm");
+    Sound sound = LoadSound("resources/weird.wav");
 
-	// Play the loaded sound and music
-	PlaySound(sound);
-	PlayMusicStream(music);
+    // Play the loaded sound and music
+    PlaySound(sound);
+    PlayMusicStream(music);
 
-	SDL_Event event;
-	bool running = true;
+    SDL_Event event;
+    bool running = true;
 
-	while (running)
-	{	
-		while (SDL_PollEvent(&event))
-		{
-            if (event.type == SDL_QUIT)
-			{
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
                 running = 0;
-            } 
-		}
+            }
+        }
 
-		// Update the music stream in each iteration
-		UpdateMusicStream(music);
-		SDL_Delay(16);
-	}
-	
-	// Free sound & music
-	UnloadSound(sound);
-	UnloadMusicStream(music);
+        // Update the music stream in each iteration
+        UpdateMusicStream(music);
+        SDL_Delay(16);
+    }
 
-	// Close the audio device
-	CloseAudioDevice();
-	return 0;
+    // Free sound & music
+    UnloadSound(sound);
+    UnloadMusicStream(music);
+
+    // Close the audio device
+    CloseAudioDevice();
+    return 0;
 }

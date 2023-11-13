@@ -189,12 +189,7 @@ typedef struct tagBITMAPINFOHEADER {
 #include "external/miniaudio.h"         // Audio device initialization and management
 
 #define MA_NO_RUNTIME_LINKING
-#if defined(SDL_MINI)
-    #include "minisdl/minisdl_audio.h"
-    #include "minisdl/minisdl_audio.c"
-#else
-    #include <SDL2/SDL.h>
-#endif
+#include <SDL2/SDL.h>
 #include "external/backend_sdl.h"
 #undef PlaySound                        // Win32 API: windows.h > mmsystem.h defines PlaySound macro
 

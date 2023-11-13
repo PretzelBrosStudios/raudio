@@ -1,13 +1,13 @@
 /**********************************************************************************************
 *
 *	SDL Backend for raudio
-*	based on the miniaudio example "custom_backend.c" by David Reid 
+*	based on the miniaudio example "custom_backend.c" by David Reid
 *	David Reid - mackron@gmail.com
 *	GitHub: https://github.com/mackron
 *
 *	Modified by Alex Schaeferling
 *	Alex Schaeferling - alex.schaeferling@gmail.com
-*	
+*
 *	This software is available as a choice of the following licenses. Choose
 *	whichever you prefer.
 *
@@ -65,11 +65,9 @@
 #define MA_SUPPORT_SDL
 #define MA_HAS_SDL
 
-typedef struct
-{
+typedef struct {
     ma_context context; /* Make this the first member so we can cast between ma_context and System. */
-    struct
-    {
+    struct {
         ma_proc SDL_InitSubSystem;
         ma_proc SDL_QuitSubSystem;
         ma_proc SDL_GetNumAudioDevices;
@@ -79,16 +77,14 @@ typedef struct
         ma_proc SDL_PauseAudioDevice;
     } sdl;
     ma_mutex lock;
-	bool isReady;
-	size_t pcmBufferSize;
-	void *pcmBuffer;
+    bool isReady;
+    size_t pcmBufferSize;
+    void *pcmBuffer;
 } System;
 
-typedef struct
-{
+typedef struct {
     ma_device device;   /* Make this the first member so we can cast between ma_device and ma_device_ex. */
-    struct
-    {
+    struct {
         int deviceIDPlayback;
         int deviceIDCapture;
     } sdl;
@@ -106,9 +102,9 @@ typedef struct
 
 #define SDL_MAIN_HANDLED
 #ifdef MA_EMSCRIPTEN
-	#include <SDL/SDL.h>
+#include <SDL/SDL.h>
 #else
-	#include <SDL2/SDL.h>
+#include <SDL2/SDL.h>
 #endif
 
 typedef SDL_AudioCallback   MA_SDL_AudioCallback;
@@ -126,27 +122,37 @@ typedef void                 (* MA_PFN_SDL_PauseAudioDevice)(MA_SDL_AudioDeviceI
 
 MA_SDL_AudioFormat ma_format_to_sdl(ma_format format)
 {
-    switch (format)
-    {
-    case ma_format_unknown: return 0;
-    case ma_format_u8:      return MA_AUDIO_U8;
-    case ma_format_s16:     return MA_AUDIO_S16;
-    case ma_format_s24:     return MA_AUDIO_S32;  /* Closest match. */
-    case ma_format_s32:     return MA_AUDIO_S32;
-    case ma_format_f32:     return MA_AUDIO_F32;
-    default:                return 0;
+    switch (format) {
+        case ma_format_unknown:
+            return 0;
+        case ma_format_u8:
+            return MA_AUDIO_U8;
+        case ma_format_s16:
+            return MA_AUDIO_S16;
+        case ma_format_s24:
+            return MA_AUDIO_S32;  /* Closest match. */
+        case ma_format_s32:
+            return MA_AUDIO_S32;
+        case ma_format_f32:
+            return MA_AUDIO_F32;
+        default:
+            return 0;
     }
 }
 
 ma_format ma_format_from_sdl(MA_SDL_AudioFormat format)
 {
-    switch (format)
-    {
-        case MA_AUDIO_U8:  return ma_format_u8;
-        case MA_AUDIO_S16: return ma_format_s16;
-        case MA_AUDIO_S32: return ma_format_s32;
-        case MA_AUDIO_F32: return ma_format_f32;
-        default:           return ma_format_unknown;
+    switch (format) {
+        case MA_AUDIO_U8:
+            return ma_format_u8;
+        case MA_AUDIO_S16:
+            return ma_format_s16;
+        case MA_AUDIO_S32:
+            return ma_format_s32;
+        case MA_AUDIO_F32:
+            return ma_format_f32;
+        default:
+            return ma_format_unknown;
     }
 }
 
@@ -241,7 +247,7 @@ static ma_result ma_context_get_device_info__sdl(ma_context* pContext, ma_device
     To get an accurate idea on the backend's native format we need to open the device. Not ideal, but it's the only way. An
     alternative to this is to report all channel counts, sample rates and formats, but that doesn't offer a good representation
     of the device's _actual_ ideal format.
-    
+
     Note: With Emscripten, it looks like non-zero values need to be specified for desiredSpec. Whatever is specified in
     desiredSpec will be used by SDL since it uses it just does it's own format conversion internally. Therefore, from what
     I can tell, there's no real way to know the device's actual format which means I'm just going to fall back to the full
@@ -340,7 +346,7 @@ static ma_result ma_device_init_internal__sdl(ma_device_ex* pDeviceEx, const ma_
         1) If periodSizeInFrames is not 0, use periodSizeInFrames; else
         2) If periodSizeInMilliseconds is not 0, use periodSizeInMilliseconds; else
         3) If both periodSizeInFrames and periodSizeInMilliseconds is 0, use the backend's default. If the backend does not allow a default
-           buffer size, use a default value of MA_DEFAULT_PERIOD_SIZE_IN_MILLISECONDS_LOW_LATENCY or 
+           buffer size, use a default value of MA_DEFAULT_PERIOD_SIZE_IN_MILLISECONDS_LOW_LATENCY or
            MA_DEFAULT_PERIOD_SIZE_IN_MILLISECONDS_CONSERVATIVE depending on the value of pConfig->performanceProfile.
 
     Note that options 2 and 3 require knowledge of the sample rate in order to convert it to a frame count. You should try to keep the
@@ -408,7 +414,7 @@ static ma_result ma_device_init__sdl(ma_device* pDevice, const ma_device_config*
     ma_result result;
 
     MA_ASSERT(pDevice != NULL);
-    
+
     /* SDL does not support loopback mode, so must return MA_DEVICE_TYPE_NOT_SUPPORTED if it's requested. */
     if (pConfig->deviceType == ma_device_type_loopback) {
         return MA_DEVICE_TYPE_NOT_SUPPORTED;
@@ -504,7 +510,7 @@ static ma_result ma_context_init__sdl(ma_context* pContext, const ma_context_con
 {
     System* pContextEx = (System*)pContext;
     int resultSDL;
-    
+
     pContextEx->sdl.SDL_InitSubSystem      = (ma_proc)SDL_InitSubSystem;
     pContextEx->sdl.SDL_QuitSubSystem      = (ma_proc)SDL_QuitSubSystem;
     pContextEx->sdl.SDL_GetNumAudioDevices = (ma_proc)SDL_GetNumAudioDevices;
